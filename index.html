@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phyo Thet Naing - ဆန်၊ ဆန်ကွဲ၊ ပြောင်း ရောင်းဝယ်ရေး</title>
+    <!-- Tailwind CSS & FontAwesome Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen p-2 sm:p-4">
+
+    <!-- Mobile Card Container -->
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden pb-8 my-auto border border-gray-100">
+        
+        <!-- ထိပ်ဆုံး Banner ပုံ (တိုက်ရိုက်ချိတ်ဆက်ထားသည်) -->
+        <div class="w-full bg-emerald-900 shadow-inner">
+            <img src="https://i.ibb.co/G4JPrgzR/853368160-1596208021979481-7813589322634893586-n.jpg" alt="Phyo Thet Naing Banner" class="w-full h-auto object-cover block">
+        </div>
+
+        <div class="p-4 sm:p-5 space-y-5">
+            
+            <!-- ဖုန်းခေါ်ဆိုရန် အပိုင်း -->
+            <div>
+                <h2 class="text-gray-700 font-bold mb-2.5 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-phone text-emerald-600"></i> ဆက်သွယ်ရန် ဖုန်းနံပါတ်များ
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <!-- ဖုန်း ၁ -->
+                    <a href="tel:09400111185" class="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-2xl hover:bg-emerald-100 transition shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone-volume text-emerald-600 text-sm"></i>
+                            <span class="text-gray-800 font-bold text-sm tracking-wide">09 400111185</span>
+                        </div>
+                        <span class="text-[11px] bg-emerald-600 text-white px-2.5 py-1 rounded-full font-medium">ခေါ်မည်</span>
+                    </a>
+
+                    <!-- ဖုန်း ၂ -->
+                    <a href="tel:09423713162" class="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-2xl hover:bg-emerald-100 transition shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone-volume text-emerald-600 text-sm"></i>
+                            <span class="text-gray-800 font-bold text-sm tracking-wide">09 423713162</span>
+                        </div>
+                        <span class="text-[11px] bg-emerald-600 text-white px-2.5 py-1 rounded-full font-medium">ခေါ်မည်</span>
+                    </a>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- ငွေလွှဲအကောင့်များ (နှိပ်လျှင် နံပါတ် Copy ယူပေးသည်) -->
+            <div>
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-gray-700 font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-wallet text-emerald-600"></i> ငွေလွှဲလက်ခံမည့် အကောင့်များ
+                    </h2>
+                    <span class="text-[11px] text-gray-400"><i class="fa-regular fa-copy mr-1"></i>Copy ယူရန် နှိပ်ပါ</span>
+                </div>
+
+                <div class="space-y-2.5">
+                    
+                    <!-- 1. KBZ Pay -->
+                    <div onclick="copyText('09423713162', 'KBZ Pay')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-blue-100 rounded-2xl shadow-sm hover:border-blue-400 hover:bg-blue-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                KPay
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-blue-600">KBZ Pay</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">09423713162</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                    <!-- 2. KBZ Bank -->
+                    <div onclick="copyText('10951199919862401', 'KBZ Bank')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-blue-100 rounded-2xl shadow-sm hover:border-blue-400 hover:bg-blue-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-[#0c2340] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                KBZ
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[#0c2340]">KBZ Bank</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">1095 1199 9198 62401</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-gray-50 text-gray-600 border border-gray-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                    <!-- 3. MAB Bank -->
+                    <div onclick="copyText('0110181011009147018', 'MAB Bank')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-emerald-100 rounded-2xl shadow-sm hover:border-emerald-400 hover:bg-emerald-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-[#006837] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                MAB
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[#006837]">MAB Bank</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">0110 1810 1100 9147 018</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                    <!-- 4. AYA Bank -->
+                    <div onclick="copyText('40037556448', 'AYA Bank')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-red-100 rounded-2xl shadow-sm hover:border-red-400 hover:bg-red-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-[#d3202a] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                AYA
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[#d3202a]">AYA Bank</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">4003 7556 448</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                    <!-- 5. A Bank -->
+                    <div onclick="copyText('0011011000029399', 'A Bank')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-purple-100 rounded-2xl shadow-sm hover:border-purple-400 hover:bg-purple-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-[#662d91] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                A
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[#662d91]">A Bank</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">0011 0110 0002 9399</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                    <!-- 6. CB Bank (ရှေ့က 0 တစ်လုံးဖြုတ်ပြီး နံပါတ်: 0110100900009512) -->
+                    <div onclick="copyText('0110100900009512', 'CB Bank')" class="cursor-pointer flex items-center justify-between p-3 bg-white border border-amber-100 rounded-2xl shadow-sm hover:border-amber-400 hover:bg-amber-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 bg-[#f5a623] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-md">
+                                CB
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-amber-700">CB Bank</p>
+                                <p class="font-bold text-gray-800 tracking-wide text-sm">0110 1009 0000 9512</p>
+                                <p class="text-[11px] text-gray-500 font-medium">U PHYO THET NAING</p>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-lg font-semibold"><i class="fa-regular fa-copy mr-1"></i>Copy</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Copy Function Script -->
+    <script>
+        function copyText(text, name) {
+            navigator.clipboard.writeText(text);
+            alert(`${name} အကောင့်နံပါတ် (${text}) ကို Copy ကူးယူပြီးပါပြီခင်ဗျာ။`);
+        }
+    </script>
+</body>
+</html>
