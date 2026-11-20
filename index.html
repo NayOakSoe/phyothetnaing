@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Phyo Thet Naing - Purchase Voucher</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PTN Voucher">
+  <link rel="apple-touch-icon" href="banner.jpg">
+
+  <link href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <style>
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Pyidaungsu', sans-serif;
+      font-size: 13.5px;
+    }
+    body {
+      background-color: #3b3b3b;
+      margin: 0;
+      padding: 10px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .top-cloud-nav {
+      width: 100%;
+      max-width: 210mm;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .cloud-badge {
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      color: #2f3640;
+      font-size: 12.5px;
+    }
+    .btn-sync {
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .controls-panel {
+      width: 100%;
+      max-width: 210mm;
+      margin-bottom: 12px;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .controls-title {
+      font-weight: bold;
+      color: #1e5a22;
+      font-size: 15px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-group-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .btn-draft { background: #d97706; color: #fff; }
+    .btn-draft-view { background: #b45309; color: #fff; }
+    .btn-ledger { background: #0284c7; color: #fff; }
+    .btn-sheet { background: #0f9d58; color: #fff; box-shadow: 0 2px 6px rgba(15,157,88,0.3); }
+    .btn-jpg { background: #ea580c; color: #fff; }
+    .btn-settings { background: #4c1d95; color: #fff; }
+    .btn-print { background: #334155; color: #fff; }
+    .btn-fit { background: #475569; color: #fff; }
+    .btn-add-pay { background: #f1f5f9; border: 1px dashed #64748b; padding: 4px 14px; font-size: 12.5px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-bottom: 8px; }
+
+    .voucher-scroll-area {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 25px;
+    }
+
+    .sheet-page {
+      background: #fff;
+      width: 210mm;
+      min-width: 210mm;
+      min-height: 297mm;
+      padding: 6mm 16mm 14mm 16mm;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      position: relative;
+      transition: transform 0.2s ease;
+      transform-origin: top center;
+    }
+
+    .banner-container {
+      width: 7in;
+      height: 2.3in;
+      margin: 0 auto 12px auto;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .banner-img {
+      width: 7in;
+      height: 2.3in;
+      object-fit: fill;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .voucher-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; }
+    .info-section { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .info-left { display: flex; flex-direction: column; gap: 4px; flex: 1.2; }
+    .info-right { display: flex; flex-direction: column; gap: 4px; min-width: 250px; }
+    .info-row { display: flex; align-items: center; position: relative; white-space: nowrap; }
+    .info-row span.label { font-weight: 600; white-space: nowrap; font-size: 13.5px; }
+    
+    input {
+      border: 1px solid transparent;
+      outline: none;
+      background: transparent;
+      font-size: 13.5px;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    input:hover { border-color: #b0bec5; }
+    input:focus { background-color: #e8f0fe !important; border-color: #2196f3 !important; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1.5px solid #000;
+      margin-bottom: 12px;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 3px 5px;
+      font-size: 13.5px;
+      height: 28px;
+      position: relative;
+    }
+    th { 
+      background-color: #e0e0e0; 
+      font-weight: bold; 
+      text-align: center;
+    }
+    td input { width: 100%; height: 100%; font-size: 13.5px; }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .bold { font-weight: bold; }
+
+    .formula-flex {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    .formula-flex input { padding: 0; text-align: center; font-weight: bold; font-size: 13.5px; }
+
+    .thank-you { text-align: center; font-weight: bold; font-size: 14px; margin-top: 30px; }
+
+    .quick-dropdown {
+      display: none;
+      position: absolute;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 999;
+      width: 100%;
+      min-width: 150px;
+      top: 100%;
+      left: 0;
+    }
+    .quick-dropdown div { padding: 6px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+    .quick-dropdown div:hover { background-color: #e0f2fe; color: #0369a1; font-weight: bold; }
+
+    .btn-row-del {
+      position: absolute;
+      right: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.65);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      width: 96%;
+      max-width: 860px;
+      max-height: 92vh;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+    .close-btn { font-size: 22px; cursor: pointer; border: none; background: transparent; font-weight: bold; }
+    
+    .tab-bar { display: flex; gap: 6px; margin: 12px 0 10px 0; border-bottom: 2px solid #e2e8f0; overflow-x: auto; }
+    .tab-btn { padding: 8px 14px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-weight: bold; color: #64748b; font-size: 13.5px; white-space: nowrap; }
+    .tab-btn.active { color: #4c1d95; border-bottom-color: #4c1d95; }
+    .tab-pane { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    .tab-pane.active { display: flex; }
+
+    .cust-add-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .cust-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .cust-add-box input { border: 1px solid #94a3b8; background: #fff; padding: 8px 10px; border-radius: 5px; flex: 1; min-width: 140px; }
+    .btn-add-cust-submit { background: #10b981; color: white; border: none; padding: 8px 18px; border-radius: 5px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+
+    .input-row-grid { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .input-row-grid input { border: 1px solid #cbd5e1; background: #fff; padding: 7px 10px; flex: 1; min-width: 160px; border-radius: 4px; font-size: 13.5px; }
+    .btn-add-mini { background: #10b981; color: white; border: none; padding: 7px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; font-size: 13.5px; }
+    
+    .list-table-box { overflow-y: auto; max-height: 420px; border: 1px solid #e2e8f0; border-radius: 4px; }
+    .simple-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+    .simple-table th { background: #f8fafc; padding: 6px; font-size: 13px; }
+    .simple-table td { padding: 6px; border: 1px solid #e2e8f0; font-size: 13px; text-align: left; }
+    .btn-del-mini { background: #ef4444; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+    .btn-open-mini { background: #0284c7; color: #fff; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+
+    /* A4 Landscape Ledger Paper */
+    .ledger-landscape-wrapper {
+      overflow-x: auto;
+      background: #475569;
+      padding: 15px 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ledger-a4-landscape {
+      background: #ffffff;
+      width: 297mm;
+      min-width: 297mm;
+      min-height: 210mm;
+      padding: 12mm 15mm;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-sizing: border-box;
+      color: #000;
+    }
+    .led-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid #093c11;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .led-title h2 { margin: 0; color: #093c11; font-size: 22px; font-weight: 800; }
+    .led-title div { font-size: 13.5px; font-weight: bold; color: #b45309; }
+    .led-meta { font-size: 13.5px; line-height: 1.5; text-align: right; }
+
+    .led-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1.5px solid #000;
+      margin-bottom: 15px;
+    }
+    .led-table th, .led-table td {
+      border: 1px solid #000 !important;
+      padding: 4px 5px;
+      font-size: 13px;
+    }
+    .led-table th {
+      background: #e0e0e0;
+      font-weight: bold;
+      text-align: center;
+      height: 32px;
+    }
+    .cell-merged-center {
+      vertical-align: middle !important;
+      text-align: center !important;
+      background: #ffffff;
+    }
+    .cell-merged-right {
+      vertical-align: middle !important;
+      text-align: right !important;
+      padding-right: 6px !important;
+      background: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .controls-panel .btn {
+        flex: 1 1 calc(50% - 6px);
+        font-size: 12.5px;
+        padding: 9px 6px;
+      }
+    }
+
+    @media print {
+      body { background: none; padding: 0; }
+      .sheet-page { box-shadow: none; padding: 0; width: 100%; min-height: auto; transform: none !important; }
+      .controls-panel, .top-cloud-nav, .modal-backdrop, .quick-dropdown, .no-print, .btn-row-del { display: none !important; }
+      input { border: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Cloud Live Sync Bar -->
+  <div class="top-cloud-nav no-print">
+    <div class="cloud-badge" id="cloudStatusBadge">
+      <span id="cloudStatusDot">🟢</span> <span id="cloudStatusText">Live Sync ချိတ်ဆက်ပြီး</span>
+    </div>
+    <button class="btn-sync" onclick="loadDataFromCloud(true)">🔄 Cloud မှ Data ဆွဲတင်မည်</button>
+  </div>
+
+  <!-- Control Toolbar -->
+  <div class="controls-panel no-print">
+    <div class="controls-title">
+      <span>🌾 Phyo Thet Naing Voucher</span>
+      <button class="btn btn-fit" onclick="toggleFitScreen()" id="btnFitScreen" title="ဖုန်းမျက်နှာပြင်တွင် ဘောက်ချာတစ်ခုလုံး အံကိုက်မြင်ရစေရန်">📱 Fit Screen</button>
+    </div>
+    <div class="btn-group-wrap">
+      <button class="btn btn-draft" onclick="saveCurrentDraft()">📌 ခေတ္တသိမ်းမည်</button>
+      <button class="btn btn-draft-view" onclick="openDraftsModal()">📂 မူကြမ်း (<span id="draftCountBadge">0</span>)</button>
+      <button class="btn btn-ledger" onclick="openCustomerLedgerModal()">📊 Customer လချုပ်</button>
+      <button class="btn btn-sheet" id="btnSaveSheet" onclick="saveToGoogleSheet()">📊 Sheet သိမ်းမည်</button>
+      <button class="btn btn-jpg" onclick="saveAsJPEG()">🖼️ JPEG သိမ်းမည်</button>
+      <button class="btn btn-settings" onclick="openSettingsModal()">⚙️ စာရင်းများ</button>
+      <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <!-- Scroll Area -->
+  <div class="voucher-scroll-area">
+    
+    <!-- A4 Voucher Sheet -->
+    <div class="sheet-page" id="voucherSheet" onclick="hideAllDropdowns(event)">
+
+      <div class="banner-container" onclick="document.getElementById('bannerUpload').click()" title="ပုံပြောင်းလိုပါက ကလစ်နှိပ်ပါ">
+        <img src="banner.jpg" id="mainBannerImg" class="banner-img" alt="Phyo Thet Naing Banner" onerror="this.src='https://via.placeholder.com/700x230/0d4d16/ffffff?text=Phyo+Thet+Naing+Banner+(7x2.3+inches)'">
+        <input type="file" id="bannerUpload" accept="image/*" style="display:none" onchange="uploadBannerImage(event)">
+      </div>
+
+      <div class="voucher-title">Purchase Voucher</div>
+      <div class="info-section">
+        <div class="info-left">
+          <div class="info-row">
+            <span class="label" style="width: 85px;">Name</span> 
+            <input type="text" id="custName" value="ဒေါ်အေးအေးကြင်" style="flex: 1;" autocomplete="off" onclick="showCustomerDropdown(event)" oninput="filterCustomerDropdown(this.value)">
+            <div class="quick-dropdown" id="custDropdown"></div>
+          </div>
+          <div class="info-row">
+            <span class="label" style="width: 85px;">Address</span> 
+            <input type="text" id="custAddress" value="ပေါင်းတလည်" style="flex: 1;">
+          </div>
+          <div class="info-row">
+            <span class="label" style="width: 85px;">Phone No</span> 
+            <input type="text" id="custPhone" value="09403703698" style="flex: 1;">
+          </div>
+        </div>
+
+        <div class="info-right">
+          <div class="info-row">
+            <span class="label" style="width: 110px;">Date</span> 
+            <input type="text" id="vDate" value="-19.10.2026" style="flex: 1;">
+          </div>
+          <div class="info-row">
+            <span class="label" style="width: 110px;">Payment Date-</span> 
+            <input type="text" id="pDate" value="" style="flex: 1;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 14%;">Date</th>
+            <th style="width: 12%;">Car No</th>
+            <th style="width: 21%;">Items</th>
+            <th style="width: 9%;">Bag</th>
+            <th style="width: 12%;">Pound ( LB )</th>
+            <th style="width: 13%;">Price</th>
+            <th style="width: 19%;">Total</th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody">
+          <tr class="item-row">
+            <td><input type="text" class="text-center row-date" value="19.10.2026"></td>
+            <td><input type="text" class="text-center row-carno" value="2J-4604"></td>
+            <td>
+              <input type="text" class="row-item" value="အသွယ်ဆန်" onclick="showItemDropdown(event, this)" autocomplete="off">
+              <div class="quick-dropdown item-drop"></div>
+            </td>
+            <td><input type="number" class="text-center row-bag" value="366" oninput="calculate()"></td>
+            <td><input type="number" step="0.01" class="text-center row-pound" value="106.20" oninput="calculate()"></td>
+            <td><input type="number" class="text-right row-price" value="83000" oninput="calculate()"></td>
+            <td><input type="text" class="text-right row-total bold" readonly></td>
+          </tr>
+          <tr class="item-row"><td><input type="text" class="text-center row-date"></td><td><input type="text" class="text-center row-carno"></td><td><input type="text" class="row-item" onclick="showItemDropdown(event, this)" autocomplete="off"><div class="quick-dropdown item-drop"></div></td><td><input type="number" class="text-center row-bag" oninput="calculate()"></td><td><input type="number" step="0.01" class="text-center row-pound" oninput="calculate()"></td><td><input type="number" class="text-right row-price" oninput="calculate()"></td><td><input type="text" class="text-right row-total" value="-" readonly></td></tr>
+          <tr class="item-row"><td><input type="text" class="text-center row-date"></td><td><input type="text" class="text-center row-carno"></td><td><input type="text" class="row-item" onclick="showItemDropdown(event, this)" autocomplete="off"><div class="quick-dropdown item-drop"></div></td><td><input type="number" class="text-center row-bag" oninput="calculate()"></td><td><input type="number" step="0.01" class="text-center row-pound" oninput="calculate()"></td><td><input type="number" class="text-right row-price" oninput="calculate()"></td><td><input type="text" class="text-right row-total" value="-" readonly></td></tr>
+          <tr class="item-row"><td><input type="text" class="text-center row-date"></td><td><input type="text" class="text-center row-carno"></td><td><input type="text" class="row-item" onclick="showItemDropdown(event, this)" autocomplete="off"><div class="quick-dropdown item-drop"></div></td><td><input type="number" class="text-center row-bag" oninput="calculate()"></td><td><input type="number" step="0.01" class="text-center row-pound" oninput="calculate()"></td><td><input type="number" class="text-right row-price" oninput="calculate()"></td><td><input type="text" class="text-right row-total" value="-" readonly></td></tr>
+          <tr class="item-row"><td><input type="text" class="text-center row-date"></td><td><input type="text" class="text-center row-carno"></td><td><input type="text" class="row-item" onclick="showItemDropdown(event, this)" autocomplete="off"><div class="quick-dropdown item-drop"></div></td><td><input type="number" class="text-center row-bag" oninput="calculate()"></td><td><input type="number" step="0.01" class="text-center row-pound" oninput="calculate()"></td><td><input type="number" class="text-right row-price" oninput="calculate()"></td><td><input type="text" class="text-right row-total" value="-" readonly></td></tr>
+          <tr class="item-row"><td><input type="text" class="text-center row-date"></td><td><input type="text" class="text-center row-carno"></td><td><input type="text" class="row-item" onclick="showItemDropdown(event, this)" autocomplete="off"><div class="quick-dropdown item-drop"></div></td><td><input type="number" class="text-center row-bag" oninput="calculate()"></td><td><input type="number" step="0.01" class="text-center row-pound" oninput="calculate()"></td><td><input type="number" class="text-right row-price" oninput="calculate()"></td><td><input type="text" class="text-right row-total" value="-" readonly></td></tr>
+
+          <tr>
+            <td colspan="6" class="bold text-center" style="letter-spacing: 1px;">Total</td>
+            <td><input type="text" class="text-right bold" id="subTotal" readonly></td>
+          </tr>
+
+          <!-- ကားခ (မထည့်ချင်ပါက လုံးဝ အလွတ်ထားနိုင်သည်) -->
+          <tr>
+            <td colspan="5" class="bold text-center">ကားခ</td>
+            <td class="text-center bold">
+              <div class="formula-flex">
+                <input type="number" id="carBagInput" style="width: 44px;" oninput="onCarBagManualChange(this)" placeholder="">
+                <span>*</span>
+                <input type="number" id="carRateInput" style="width: 52px;" value="2800" oninput="calculate(true)">
+              </div>
+            </td>
+            <td><input type="text" class="text-right bold" id="carFeeTotal" readonly></td>
+          </tr>
+
+          <!-- ပွဲခ (မထည့်ချင်ပါက လုံးဝ အလွတ်ထားနိုင်သည်) -->
+          <tr>
+            <td colspan="5" class="bold text-center">ပွဲခ</td>
+            <td class="text-center bold">
+              <div class="formula-flex">
+                <input type="number" id="brokerBagInput" style="width: 44px;" oninput="onBrokerBagManualChange(this)" placeholder="">
+                <span>*</span>
+                <input type="number" id="brokerRateInput" style="width: 52px;" value="200" oninput="calculate(true)">
+              </div>
+            </td>
+            <td><input type="text" class="text-right bold" id="brokerFeeTotal" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Payments Table -->
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 27%;">Date</th>
+            <th style="width: 45%;">Payment Method</th>
+            <th style="width: 28%;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="paymentBody">
+          <tr class="pay-row">
+            <td><input type="text" class="text-center pay-date"></td>
+            <td>
+              <input type="text" class="row-paymethod" onclick="showBankDropdown(event, this)" autocomplete="off">
+              <div class="quick-dropdown bank-drop"></div>
+            </td>
+            <td>
+              <input type="number" class="text-right pay-amount" oninput="calculate()">
+              <button class="btn-row-del no-print" onclick="deletePayRow(this)" title="လိုင်းဖျက်ရန်">✕</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="bold text-center">Total Balance</td>
+            <td><input type="text" class="text-right bold" id="finalBalance" readonly></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <button class="btn-add-pay no-print" onclick="addPaymentRow()">+ Payment လိုင်းထပ်တိုးမည်</button>
+
+      <div class="thank-you">Thank you for choosing us!</div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: Drafts Modal -->
+  <div class="modal-backdrop" id="draftsModal">
+    <div class="modal-content" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 style="margin:0; color:#b45309; font-size:16px;">📂 ခေတ္တသိမ်းထားသော မူကြမ်းဘောက်ချာများ</h3>
+        <button class="close-btn" onclick="closeDraftsModal()">✕</button>
+      </div>
+
+      <div style="padding: 8px 0; font-size: 13px; color: #555;">
+        လက်ရှိ ရိုက်လက်စ ဘောက်ချာများကို ခေတ္တသိမ်းထားနိုင်ပြီး လိုအပ်သည့်အခါ ပြန်ဖွင့်နိုင်ပါသည် (သို့မဟုတ်) ဖျက်ပစ်နိုင်ပါသည်။
+      </div>
+
+      <div class="list-table-box">
+        <table class="simple-table">
+          <thead>
+            <tr>
+              <th width="40">စဉ်</th>
+              <th>သိမ်းသည့်အချိန်</th>
+              <th>ဝယ်သူအမည်</th>
+              <th>ရက်စွဲ</th>
+              <th>ကျသင့်ငွေ</th>
+              <th width="140" style="text-align:center;">လုပ်ဆောင်ချက်</th>
+            </tr>
+          </thead>
+          <tbody id="draftsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Customer Ledger Modal -->
+  <div class="modal-backdrop" id="customerLedgerModal">
+    <div class="modal-content" style="max-width: 98vw; width: 315mm;">
+      <div class="modal-header">
+        <h3 style="margin:0; color:#0284c7; font-size:15px;">📊 အရောင်းအဝယ် လချုပ်စာရင်း (A4 Landscape)</h3>
+        <div style="display:flex; gap:6px;">
+          <button class="btn" style="background:#ea580c; color:#fff;" onclick="exportLedgerLandscapeJPEG()">🖼️ A4 Landscape JPEG ထုတ်မည်</button>
+          <button class="close-btn" onclick="closeCustomerLedgerModal()">✕</button>
+        </div>
+      </div>
+
+      <div style="margin: 8px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <label style="font-weight:bold;">Customer ရွေးပါ:</label>
+        <select id="ledgerCustSelect" style="border:1px solid #cbd5e1; padding:6px 10px; border-radius:4px; font-weight:bold; width:220px;" onchange="renderCustomerLedger(this.value)">
+        </select>
+      </div>
+
+      <div class="ledger-landscape-wrapper">
+        <div class="ledger-a4-landscape" id="ledgerLandscapePaper">
+          
+          <div class="led-header">
+            <div class="led-title">
+              <h2>Phyo Thet Naing</h2>
+              <div>ဆန် / ဆန်ကွဲ / ပြောင်းရောင်းဝယ်ရေး</div>
+            </div>
+            <div style="text-align: center;">
+              <span style="background: #093c11; color: #fff; padding: 4px 18px; border-radius: 20px; font-weight: bold; font-size: 15px;">
+                အရောင်းအဝယ် လချုပ်စာရင်း
+              </span>
+            </div>
+            <div class="led-meta">
+              <div><b>ထုတ်ယူသည့်ရက်:</b> <span id="ledGenDate"></span></div>
+              <div><b>📞 Hotline:</b> 09400111185 - 9423713162</div>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:7px 14px; border-radius:6px; margin-bottom:15px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <div><b>ဝယ်သူအမည်:</b> <span id="ledCustName">-</span></div>
+            <div><b>လိပ်စာ:</b> <span id="ledCustAddress">-</span></div>
+            <div><b>ဖုန်းနံပါတ်:</b> <span id="ledCustPhone">-</span></div>
+          </div>
+
+          <!-- Landscape Table (All 13 Columns with Merge & Center) -->
+          <table class="led-table">
+            <thead>
+              <tr>
+                <th style="width: 7.5%;">Date</th>
+                <th style="width: 7.5%;">ကားနံပါတ်</th>
+                <th style="width: 11%;">ကုန်ပစ္စည်း</th>
+                <th style="width: 5.5%;">အိတ်ရေ</th>
+                <th style="width: 6.5%;">ပေါင် (LB)</th>
+                <th style="width: 9.5%;">ဈေးနှုန်း</th>
+                <th style="width: 12%;">ကျသင့်ငွေ</th>
+                <th style="width: 7%;">ကားခ</th>
+                <th style="width: 6%;">ပွဲခ</th>
+                <th style="width: 8%;">Payment Date</th>
+                <th style="width: 9%;">Payment Method</th>
+                <th style="width: 9.5%;">ပေးချေငွေ</th>
+                <th style="width: 9.5%;">Balance</th>
+                <th class="no-print" style="width: 55px; text-align:center;">#</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody"></tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; margin: 0; color: #4c1d95;">⚙️ အချက်အလက်များ စီမံခန့်ခွဲမှု</h3>
+        <button class="close-btn" onclick="closeSettingsModal()">✕</button>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(0)">👥 Customers</button>
+        <button class="tab-btn" onclick="switchTab(1)">🌾 Items</button>
+        <button class="tab-btn" onclick="switchTab(2)">💳 Banking</button>
+      </div>
+
+      <div class="tab-pane active" id="tabCustomer">
+        <div class="cust-add-box">
+          <div class="cust-form-row">
+            <input type="text" id="mCustName" placeholder="အမည် (ဥပမာ- ဒေါ်အေးအေးကြင်)">
+            <input type="text" id="mCustPhone" placeholder="ဖုန်းနံပါတ် (ဥပမာ- 09...)">
+          </div>
+          <div class="cust-form-row">
+            <input type="text" id="mCustAddress" placeholder="လိပ်စာ (ဥပမာ- ပေါင်းတလည်)" style="flex: 2;">
+            <button class="btn-add-cust-submit" onclick="addCustomerFromModal()">+ စာရင်းထည့်မည်</button>
+          </div>
+        </div>
+
+        <div class="list-table-box">
+          <table class="simple-table">
+            <thead><tr><th>အမည်</th><th>လိပ်စာ</th><th>ဖုန်း</th><th width="40"></th></tr></thead>
+            <tbody id="mCustBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tabItem">
+        <div class="input-row-grid">
+          <input type="text" id="mItemName" placeholder="ကုန်ပစ္စည်းအမည်">
+          <button class="btn-add-mini" onclick="addItemFromModal()">+ ထည့်မည်</button>
+        </div>
+        <div class="list-table-box">
+          <table class="simple-table">
+            <thead><tr><th>အမျိုးအမည်</th><th width="40"></th></tr></thead>
+            <tbody id="mItemBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tabBank">
+        <div class="input-row-grid">
+          <input type="text" id="mBankName" placeholder="Banking အမည်">
+          <button class="btn-add-mini" onclick="addBankFromModal()">+ ထည့်မည်</button>
+        </div>
+        <div class="list-table-box">
+          <table class="simple-table">
+            <thead><tr><th>Payment Method</th><th width="40"></th></tr></thead>
+            <tbody id="mBankBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzDkO-eb06sWtkY6dctpPcnLkBLpwOa-4XlqYTmYq9zB6_99HczeFKuEqfYKjVkHh7ePA/exec";
+    const JSONBIN_BIN_ID = "6ad831c4ac6210605a444d9e";
+    const JSONBIN_MASTER_KEY = "$2a$10$xFo387LtZCGRwyr0DW5MJeGv.7wcreHX3w/YgpYUa1DekqAToK7eq";
+
+    const defaultData = {
+      customers: [
+        { name: "ဒေါ်အေးအေးကြင်", address: "ပေါင်းတလည်", phone: "09403703698" },
+        { name: "ဦးဝင်းနိုင်", address: "ပြည်မြို့", phone: "09420011223" },
+        { name: "ဒေါ်စန်းစန်း", address: "သဲကုန်း", phone: "09798887766" }
+      ],
+      items: ["အသွယ်ဆန်", "မနောသုခ", "ပေါ်ဆန်းမွှေး", "ဆန်ကွဲ (B1)", "ဆန်ကွဲ (B2)", "ပြောင်းဖူးစေ့"],
+      banks: ["KPay", "WavePay", "CB Pay", "AYA Pay", "Cash (လက်ငင်း)", "KBZ Bank", "AYA Bank"]
+    };
+
+    // ==========================================
+    // 🚚 ကားခ/ပွဲခ အိတ်ရေ ကိုယ်တိုင်ပြင်ဆင်ခွင့် / အလွတ်ထားခွင့်
+    // ==========================================
+    let isCarBagManual = false;
+    let isBrokerBagManual = false;
+
+    function onCarBagManualChange(el) {
+      isCarBagManual = true; // အသုံးပြုသူက ကလစ်နှိပ်ပြင်ဆင်လိုက်သည်နှင့် (ဖျက်သည်ဖြစ်စေ၊ ရိုက်သည်ဖြစ်စေ) Auto ပြန်မထည့်စေရန် မှတ်ထားမည်
+      calculate(true);
+    }
+
+    function onBrokerBagManualChange(el) {
+      isBrokerBagManual = true;
+      calculate(true);
+    }
+
+    // ==========================================
+    // 📱 MOBILE FIT SCREEN
+    // ==========================================
+    let isFitScreen = false;
+    function toggleFitScreen() {
+      const sheet = document.getElementById("voucherSheet");
+      const btn = document.getElementById("btnFitScreen");
+      isFitScreen = !isFitScreen;
+
+      if (isFitScreen) {
+        const screenWidth = window.innerWidth - 12;
+        const sheetWidth = sheet.offsetWidth || 794;
+        const scaleRatio = screenWidth / sheetWidth;
+        
+        sheet.style.transform = `scale(${scaleRatio})`;
+        sheet.style.marginBottom = `-${sheet.offsetHeight * (1 - scaleRatio)}px`;
+        btn.innerText = "🔍 မူရင်းဆိုဒ်";
+      } else {
+        sheet.style.transform = "none";
+        sheet.style.marginBottom = "0px";
+        btn.innerText = "📱 Fit Screen";
+      }
+    }
+
+    // ==========================================
+    // 📂 DRAFTS MANAGER
+    // ==========================================
+    let currentLoadedDraftId = null;
+
+    function getDrafts() {
+      const stored = localStorage.getItem("ptn_drafts_list");
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveDraftsList(list) {
+      localStorage.setItem("ptn_drafts_list", JSON.stringify(list));
+      updateDraftCountBadge();
+    }
+
+    function updateDraftCountBadge() {
+      const list = getDrafts();
+      const badge = document.getElementById("draftCountBadge");
+      if (badge) badge.innerText = list.length;
+    }
+
+    function saveCurrentDraft() {
+      const rows = [];
+      document.querySelectorAll("#itemsBody .item-row").forEach(row => {
+        rows.push({
+          date: row.querySelector(".row-date").value,
+          carno: row.querySelector(".row-carno").value,
+          item: row.querySelector(".row-item").value,
+          bag: row.querySelector(".row-bag").value,
+          pound: row.querySelector(".row-pound").value,
+          price: row.querySelector(".row-price").value,
+          total: row.querySelector(".row-total").value
+        });
+      });
+
+      const payments = [];
+      document.querySelectorAll("#paymentBody .pay-row").forEach(p => {
+        payments.push({
+          date: p.querySelector(".pay-date").value,
+          method: p.querySelector(".row-paymethod").value,
+          amount: p.querySelector(".pay-amount").value
+        });
+      });
+
+      const custName = document.getElementById("custName").value.trim() || "အမည်မသိ";
+      const totalAmount = document.getElementById("subTotal").value || "-";
+      const finalBal = document.getElementById("finalBalance").value || "-";
+
+      const draftObj = {
+        id: currentLoadedDraftId || "DRAFT-" + Date.now(),
+        savedAt: new Date().toLocaleTimeString("en-GB") + " (" + new Date().toLocaleDateString("en-GB") + ")",
+        custName: custName,
+        totalAmount: totalAmount,
+        finalBal: finalBal,
+        data: {
+          name: document.getElementById("custName").value,
+          address: document.getElementById("custAddress").value,
+          phone: document.getElementById("custPhone").value,
+          vDate: document.getElementById("vDate").value,
+          pDate: document.getElementById("pDate").value,
+          carBag: document.getElementById("carBagInput").value,
+          carRate: document.getElementById("carRateInput").value,
+          brokerBag: document.getElementById("brokerBagInput").value,
+          brokerRate: document.getElementById("brokerRateInput").value,
+          isCarBagManual: isCarBagManual,
+          isBrokerBagManual: isBrokerBagManual,
+          rows: rows,
+          payments: payments
+        }
+      };
+
+      const drafts = getDrafts();
+      const existingIdx = drafts.findIndex(d => d.id === draftObj.id);
+      if (existingIdx >= 0) {
+        drafts[existingIdx] = draftObj;
+      } else {
+        drafts.unshift(draftObj);
+      }
+
+      currentLoadedDraftId = draftObj.id;
+      saveDraftsList(drafts);
+      alert(`✅ [${custName}] အတွက် ဘောက်ချာကို မူကြမ်းအဖြစ် ခေတ္တသိမ်းထားပြီးပါပြီ!`);
+    }
+
+    function openDraftsModal() {
+      renderDraftsTable();
+      document.getElementById("draftsModal").style.display = "flex";
+    }
+
+    function closeDraftsModal() {
+      document.getElementById("draftsModal").style.display = "none";
+    }
+
+    function renderDraftsTable() {
+      const tbody = document.getElementById("draftsTableBody");
+      tbody.innerHTML = "";
+      const drafts = getDrafts();
+
+      if (drafts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:18px; color:#888;">ခေတ္တသိမ်းထားသော မူကြမ်းစာရင်း မရှိသေးပါ</td></tr>`;
+        return;
+      }
+
+      drafts.forEach((d, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="text-align:center;">${idx + 1}</td>
+          <td>${d.savedAt}</td>
+          <td><b>${d.custName}</b></td>
+          <td>${d.data.vDate || '-'}</td>
+          <td style="text-align:right; font-weight:bold; color:#093c11;">${d.totalAmount} Ks</td>
+          <td style="text-align:center;">
+            <button class="btn-open-mini" onclick="loadDraftByIndex(${idx})">ပြန်ဖွင့်မည်</button>
+            <button class="btn-del-mini" style="margin-left:4px;" onclick="deleteDraftByIndex(${idx})">🗑️ ဖျက်မည်</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function loadDraftByIndex(idx) {
+      const drafts = getDrafts();
+      const d = drafts[idx];
+      if (!d) return;
+
+      const data = d.data;
+      document.getElementById("custName").value = data.name || "";
+      document.getElementById("custAddress").value = data.address || "";
+      document.getElementById("custPhone").value = data.phone || "";
+      document.getElementById("vDate").value = data.vDate || "-19.10.2026";
+      document.getElementById("pDate").value = data.pDate || "";
+
+      isCarBagManual = !!data.isCarBagManual;
+      isBrokerBagManual = !!data.isBrokerBagManual;
+
+      document.getElementById("carBagInput").value = data.carBag || "";
+      document.getElementById("carRateInput").value = data.carRate || "2800";
+      document.getElementById("brokerBagInput").value = data.brokerBag || "";
+      document.getElementById("brokerRateInput").value = data.brokerRate || "200";
+
+      if (data.rows && data.rows.length) {
+        const itemRows = document.querySelectorAll("#itemsBody .item-row");
+        data.rows.forEach((r, i) => {
+          if (itemRows[i]) {
+            itemRows[i].querySelector(".row-date").value = r.date || "";
+            itemRows[i].querySelector(".row-carno").value = r.carno || "";
+            itemRows[i].querySelector(".row-item").value = r.item || "";
+            itemRows[i].querySelector(".row-bag").value = r.bag || "";
+            itemRows[i].querySelector(".row-pound").value = r.pound || "";
+            itemRows[i].querySelector(".row-price").value = r.price || "";
+            itemRows[i].querySelector(".row-total").value = r.total || "-";
+          }
+        });
+      }
+
+      if (data.payments && data.payments.length) {
+        const pBody = document.getElementById("paymentBody");
+        pBody.innerHTML = "";
+        data.payments.forEach(p => {
+          const tr = document.createElement("tr");
+          tr.className = "pay-row";
+          tr.innerHTML = `
+            <td><input type="text" class="text-center pay-date" value="${p.date || ''}"></td>
+            <td>
+              <input type="text" class="row-paymethod" value="${p.method || ''}" onclick="showBankDropdown(event, this)" autocomplete="off">
+              <div class="quick-dropdown bank-drop"></div>
+            </td>
+            <td>
+              <input type="number" class="text-right pay-amount" value="${p.amount || ''}" oninput="calculate()">
+              <button class="btn-row-del no-print" onclick="deletePayRow(this)" title="လိုင်းဖျက်ရန်">✕</button>
+            </td>
+          `;
+          pBody.appendChild(tr);
+        });
+      }
+
+      currentLoadedDraftId = d.id;
+      calculate(true);
+      closeDraftsModal();
+      alert(`[${d.custName}] မူကြမ်းကို ဘောက်ချာထဲသို့ ပြန်လည်ဖွင့်ပြီးပါပြီ!`);
+    }
+
+    function deleteDraftByIndex(idx) {
+      if (confirm("ဤမူကြမ်းဘောက်ချာကို ဖျက်ပစ်မှာ သေချာပါသလား?")) {
+        const drafts = getDrafts();
+        if (currentLoadedDraftId === drafts[idx].id) {
+          currentLoadedDraftId = null;
+        }
+        drafts.splice(idx, 1);
+        saveDraftsList(drafts);
+        renderDraftsTable();
+      }
+    }
+
+    function clearDraftOnFinalized() {
+      if (currentLoadedDraftId) {
+        const drafts = getDrafts();
+        const filtered = drafts.filter(d => d.id !== currentLoadedDraftId);
+        saveDraftsList(filtered);
+        currentLoadedDraftId = null;
+      }
+    }
+
+    // ========================================================
+    // 📊 CUSTOMER LEDGER
+    // ==========================================
+    function getSalesLedger() {
+      const stored = localStorage.getItem("ptn_sales_ledger");
+      let list = stored ? JSON.parse(stored) : [];
+      let hasUpdate = false;
+      list.forEach((item, index) => {
+        if (!item.id) {
+          item.id = "REC_" + Date.now() + "_" + index;
+          hasUpdate = true;
+        }
+      });
+      if (hasUpdate) {
+        localStorage.setItem("ptn_sales_ledger", JSON.stringify(list));
+      }
+      return list;
+    }
+
+    function recordSaleToLedger(record) {
+      const ledger = getSalesLedger();
+      record.id = "REC_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+      ledger.push(record);
+      localStorage.setItem("ptn_sales_ledger", JSON.stringify(ledger));
+    }
+
+    function deleteLedgerRecord(recordId) {
+      if (confirm("ဤအရောင်းမှတ်တမ်းကို လချုပ်စာရင်းထဲမှ ဖျက်ပစ်မှာ သေချာပါသလား?")) {
+        let ledger = getSalesLedger();
+        ledger = ledger.filter(r => String(r.id) !== String(recordId));
+        localStorage.setItem("ptn_sales_ledger", JSON.stringify(ledger));
+        
+        const currentCust = document.getElementById("ledgerCustSelect").value;
+        renderCustomerLedger(currentCust);
+        alert("အရောင်းမှတ်တမ်းကို အောင်မြင်စွာ ဖျက်ပြီးပါပြီ!");
+      }
+    }
+
+    function openCustomerLedgerModal() {
+      const modal = document.getElementById("customerLedgerModal");
+      const custSelect = document.getElementById("ledgerCustSelect");
+      const customers = getData("customers");
+
+      custSelect.innerHTML = `<option value="">-- Customer ရွေးပါ --</option>`;
+      customers.forEach(c => {
+        custSelect.innerHTML += `<option value="${c.name}">${c.name} (${c.address || ''})</option>`;
+      });
+
+      const currentCust = document.getElementById("custName").value.trim();
+      if (currentCust) custSelect.value = currentCust;
+
+      document.getElementById("ledGenDate").innerText = new Date().toLocaleDateString("en-GB");
+      modal.style.display = "flex";
+      renderCustomerLedger(custSelect.value);
+    }
+
+    function closeCustomerLedgerModal() {
+      document.getElementById("customerLedgerModal").style.display = "none";
+    }
+
+    function renderCustomerLedger(custName) {
+      const tbody = document.getElementById("ledgerTableBody");
+      tbody.innerHTML = "";
+
+      const customers = getData("customers");
+      const foundCust = customers.find(c => c.name.trim() === (custName || '').trim());
+      document.getElementById("ledCustName").innerText = custName || "-";
+      document.getElementById("ledCustAddress").innerText = foundCust ? foundCust.address : "-";
+      document.getElementById("ledCustPhone").innerText = foundCust ? foundCust.phone : "-";
+
+      if (!custName) {
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; padding:18px; color:#888;">ကျေးဇူးပြု၍ Customer အမည် ရွေးချယ်ပေးပါ</td></tr>`;
+        return;
+      }
+
+      const ledger = getSalesLedger();
+      const records = ledger.filter(r => r.name.trim() === custName.trim());
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; padding:18px; color:#888;">[${custName}] အတွက် အရောင်းစာရင်း မှတ်တမ်း မရှိသေးပါ</td></tr>`;
+        return;
+      }
+
+      records.forEach(rec => {
+        const pList = (rec.paymentList && rec.paymentList.length > 0) ? rec.paymentList : [
+          { date: rec.paymentDate || '-', method: rec.paymentMethod || '-', amount: rec.rawPaid ? rec.rawPaid.toLocaleString() : '-' }
+        ];
+
+        const spanCount = Math.max(pList.length, 1);
+        const firstItem = rec.items[0] || {};
+        const bags = parseFloat(firstItem.bag) || 0;
+        const total = parseFloat(String(firstItem.total).replace(/,/g, '')) || 0;
+
+        const tr1 = document.createElement("tr");
+        tr1.innerHTML = `
+          <td rowspan="${spanCount}" class="cell-merged-center">${rec.date}</td>
+          <td rowspan="${spanCount}" class="cell-merged-center"><b>${firstItem.carNo || '-'}</b></td>
+          <td rowspan="${spanCount}" class="cell-merged-center">${firstItem.itemName || '-'}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right">${bags.toLocaleString()}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right">${firstItem.pound || '-'}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right">${Number(firstItem.price || 0).toLocaleString()}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right" style="font-weight:bold; color:#093c11;">${Number(total).toLocaleString()}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right">${rec.carFeeTotal || '-'}</td>
+          <td rowspan="${spanCount}" class="cell-merged-right">${rec.brokerFeeTotal || '-'}</td>
+          
+          <td style="text-align:center;">${pList[0].date || '-'}</td>
+          <td style="text-align:center;">${pList[0].method || '-'}</td>
+          <td style="text-align:right; font-weight:bold; color:#0284c7;">${pList[0].amount || '-'}</td>
+          
+          <td rowspan="${spanCount}" class="cell-merged-right" style="font-weight:bold; color:#e11d48; font-size:14px;">${rec.balance || '-'}</td>
+          
+          <td rowspan="${spanCount}" class="no-print cell-merged-center">
+            <button class="btn-del-mini" onclick="deleteLedgerRecord('${rec.id}')">🗑️ ဖျက်</button>
+          </td>
+        `;
+        tbody.appendChild(tr1);
+
+        for (let k = 1; k < spanCount; k++) {
+          const trExtra = document.createElement("tr");
+          trExtra.innerHTML = `
+            <td style="text-align:center;">${pList[k].date || '-'}</td>
+            <td style="text-align:center;">${pList[k].method || '-'}</td>
+            <td style="text-align:right; font-weight:bold; color:#0284c7;">${pList[k].amount || '-'}</td>
+          `;
+          tbody.appendChild(trExtra);
+        }
+      });
+    }
+
+    async function exportLedgerLandscapeJPEG() {
+      const custName = document.getElementById("ledgerCustSelect").value.trim() || "Customer";
+      const paper = document.getElementById("ledgerLandscapePaper");
+
+      try {
+        const canvas = await html2canvas(paper, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff"
+        });
+
+        canvas.toBlob(async function(blob) {
+          const dateStr = new Date().toLocaleDateString('en-GB').replace(/[/]/g, '-');
+          const filename = `လချုပ်_${custName}_${dateStr}.jpg`;
+          const file = new File([blob], filename, { type: "image/jpeg" });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], title: filename });
+              return;
+            } catch(e) {}
+          }
+
+          if (window.showSaveFilePicker) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{ description: 'JPEG Image (*.jpg)', accept: { 'image/jpeg': ['.jpg', '.jpeg'] } }],
+              });
+              const writable = await handle.createWritable();
+              await writable.write(blob);
+              await writable.close();
+              alert(`A4 Landscape လချုပ်ပုံကို [${filename}] ဖြင့် သိမ်းဆည်းပြီးပါပြီ!`);
+              return;
+            } catch (err) {}
+          }
+
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }, "image/jpeg", 0.95);
+      } catch (err) {
+        alert("Error exporting Landscape JPEG: " + err);
+      }
+    }
+
+    // ==========================================
+    // 💾 GOOGLE SHEET & JPEG SAVE
+    // ==========================================
+    async function saveToGoogleSheet() {
+      const btn = document.getElementById("btnSaveSheet");
+      if (btn.disabled) return;
+
+      const originalText = btn.innerText;
+
+      const items = [];
+      document.querySelectorAll(".item-row").forEach(row => {
+        const bag = row.querySelector(".row-bag").value;
+        const item = row.querySelector(".row-item").value;
+        const total = row.querySelector(".row-total").value;
+        if (bag && item && total !== "-") {
+          items.push({
+            carNo: row.querySelector(".row-carno").value || "-",
+            itemName: item,
+            bag: bag,
+            pound: row.querySelector(".row-pound").value || "0",
+            price: row.querySelector(".row-price").value || "0",
+            total: total
+          });
+        }
+      });
+
+      if (items.length === 0) {
+        alert("ကျေးဇူးပြု၍ ပစ္စည်းစာရင်း အနည်းဆုံး ၁ ခု ရိုက်ထည့်ပေးပါ!");
+        return;
+      }
+
+      let payDates = [];
+      let payMethods = [];
+      let payAmounts = [];
+      let paymentList = [];
+      let totalPaid = 0;
+
+      document.querySelectorAll("#paymentBody .pay-row").forEach(pRow => {
+        const d = pRow.querySelector(".pay-date").value.trim();
+        const m = pRow.querySelector(".row-paymethod").value.trim();
+        const a = parseFloat(pRow.querySelector(".pay-amount").value) || 0;
+        if (m || a > 0) {
+          if (d) payDates.push(d);
+          if (m) payMethods.push(m);
+          if (a > 0) payAmounts.push(a.toLocaleString() + " Ks");
+          paymentList.push({
+            date: d || "-",
+            method: m || "-",
+            amount: a > 0 ? a.toLocaleString() + " Ks" : "-"
+          });
+          totalPaid += a;
+        }
+      });
+
+      const headerPDate = document.getElementById("pDate").value.trim();
+      if (headerPDate && !payDates.includes(headerPDate)) {
+        payDates.unshift(headerPDate);
+      }
+
+      let formattedMethods = payMethods.length > 0 ? payMethods.join("\n+ ") : "-";
+      let formattedAmounts = "-";
+      if (payAmounts.length > 1) {
+        formattedAmounts = payAmounts.join("\n+ ") + `\n(= ${totalPaid.toLocaleString()} Ks)`;
+      } else if (payAmounts.length === 1) {
+        formattedAmounts = payAmounts[0];
+      }
+
+      const payload = {
+        date: document.getElementById("vDate").value.replace(/^-/, '').trim() || "-",
+        name: document.getElementById("custName").value.trim() || "-",
+        carFeeTotal: document.getElementById("carFeeTotal").value || "-",
+        brokerFeeTotal: document.getElementById("brokerFeeTotal").value || "-",
+        paymentDate: payDates.join("\n") || "-",
+        paymentMethod: formattedMethods,
+        paymentTotal: formattedAmounts,
+        paymentList: paymentList,
+        rawPaid: totalPaid,
+        balance: document.getElementById("finalBalance").value || "-",
+        items: items
+      };
+
+      btn.disabled = true;
+      btn.innerText = "⏳ Sheet သို့ ပို့နေသည်...";
+
+      try {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "data=" + encodeURIComponent(JSON.stringify(payload))
+        });
+
+        recordSaleToLedger(payload);
+        clearDraftOnFinalized();
+
+        alert("✅ စာရင်းများကို Google Sheet ထဲသို့ (၁) ကြိမ်တည်း သိမ်းဆည်းပြီး လချုပ်မှတ်တမ်းထဲ ထည့်ပြီးပါပြီ!");
+      } catch (err) {
+        alert("⚠️ ချိတ်ဆက်မှု အမှားရှိပါသည်: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    }
+
+    async function saveAsJPEG() {
+      const element = document.getElementById("voucherSheet");
+      document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+      
+      const currentTransform = element.style.transform;
+      element.style.transform = "none";
+      element.style.marginBottom = "0px";
+
+      try {
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+        document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+
+        if (isFitScreen) {
+          toggleFitScreen();
+        }
+
+        canvas.toBlob(async function(blob) {
+          let rawName = document.getElementById("custName").value.trim().replace(/[/\\?%*:|"<>]/g, '') || "Customer";
+          let rawDate = document.getElementById("vDate").value.replace(/^-/, '').trim().replace(/[/\\?%*:|"<>]/g, '-') || "voucher";
+          const filename = `${rawName}_${rawDate}.jpg`;
+          
+          const file = new File([blob], filename, { type: "image/jpeg" });
+
+          clearDraftOnFinalized();
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], title: filename });
+              return;
+            } catch (err) {}
+          }
+
+          if (window.showSaveFilePicker) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{ description: 'JPEG Image (*.jpg)', accept: { 'image/jpeg': ['.jpg', '.jpeg'] } }],
+              });
+              const writable = await handle.createWritable();
+              await writable.write(blob);
+              await writable.close();
+              alert(`JPEG ပုံကို [${filename}] ဖြင့် သိမ်းဆည်းပြီးပါပြီ!`);
+              return;
+            } catch (err) {}
+          }
+
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }, "image/jpeg", 0.95);
+      } catch (error) {
+        document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+        alert("Error: " + error);
+      }
+    }
+
+    // Cloud Sync
+    async function loadDataFromCloud(isManual = false) {
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+          headers: { "X-Master-Key": JSONBIN_MASTER_KEY },
+          cache: "no-store"
+        });
+        if (res.ok) {
+          const result = await res.json();
+          const cloudData = result.record;
+          if (cloudData) {
+            if (cloudData.customers) localStorage.setItem("ptn_customers", JSON.stringify(cloudData.customers));
+            if (cloudData.items) localStorage.setItem("ptn_items", JSON.stringify(cloudData.items));
+            if (cloudData.banks) localStorage.setItem("ptn_banks", JSON.stringify(cloudData.banks));
+            document.getElementById('cloudStatusDot').innerText = "🟢";
+            document.getElementById('cloudStatusText').innerText = "Live Sync ချိတ်ဆက်ပြီး";
+            if (isManual) alert("✅ Cloud မှ Data များကို ရယူပြီးပါပြီ!");
+          }
+        }
+      } catch (err) {
+        document.getElementById('cloudStatusDot').innerText = "🟢";
+        document.getElementById('cloudStatusText').innerText = "Local မှ သုံးနေသည်";
+      }
+    }
+
+    async function syncDataToCloud() {
+      try {
+        const payload = {
+          customers: getData("customers"),
+          items: getData("items"),
+          banks: getData("banks"),
+          last_updated: new Date().toISOString()
+        };
+        await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_MASTER_KEY },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {}
+    }
+
+    function getData(key) {
+      const saved = localStorage.getItem("ptn_" + key);
+      return saved ? JSON.parse(saved) : defaultData[key];
+    }
+    function setData(key, val) {
+      localStorage.setItem("ptn_" + key, JSON.stringify(val));
+      syncDataToCloud();
+    }
+
+    function hideAllDropdowns(e) {
+      if (!e.target.matches('input')) {
+        document.querySelectorAll('.quick-dropdown').forEach(d => d.style.display = 'none');
+      }
+    }
+
+    function showCustomerDropdown(e) {
+      e.stopPropagation();
+      document.querySelectorAll('.quick-dropdown').forEach(d => d.style.display = 'none');
+      const box = document.getElementById("custDropdown");
+      const list = getData("customers");
+      box.innerHTML = "";
+      list.forEach(c => {
+        const item = document.createElement("div");
+        item.textContent = c.name + (c.address ? ` (${c.address})` : "");
+        item.onclick = () => {
+          document.getElementById("custName").value = c.name;
+          document.getElementById("custAddress").value = c.address || "";
+          document.getElementById("custPhone").value = c.phone || "";
+          box.style.display = "none";
+        };
+        box.appendChild(item);
+      });
+      box.style.display = "block";
+    }
+
+    function filterCustomerDropdown(val) {
+      const box = document.getElementById("custDropdown");
+      const list = getData("customers");
+      box.innerHTML = "";
+      const filtered = list.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
+      filtered.forEach(c => {
+        const item = document.createElement("div");
+        item.textContent = c.name + (c.address ? ` (${c.address})` : "");
+        item.onclick = () => {
+          document.getElementById("custName").value = c.name;
+          document.getElementById("custAddress").value = c.address || "";
+          document.getElementById("custPhone").value = c.phone || "";
+          box.style.display = "none";
+        };
+        box.appendChild(item);
+      });
+      box.style.display = filtered.length ? "block" : "none";
+    }
+
+    function showItemDropdown(e, inputEl) {
+      e.stopPropagation();
+      document.querySelectorAll('.quick-dropdown').forEach(d => d.style.display = 'none');
+      const box = inputEl.nextElementSibling;
+      const list = getData("items");
+      box.innerHTML = "";
+      list.forEach(item => {
+        const d = document.createElement("div");
+        d.textContent = item;
+        d.onclick = () => {
+          inputEl.value = item;
+          box.style.display = "none";
+        };
+        box.appendChild(d);
+      });
+      box.style.display = "block";
+    }
+
+    function showBankDropdown(e, inputEl) {
+      e.stopPropagation();
+      document.querySelectorAll('.quick-dropdown').forEach(d => d.style.display = 'none');
+      const box = inputEl.nextElementSibling;
+      const list = getData("banks");
+      box.innerHTML = "";
+      list.forEach(bank => {
+        const d = document.createElement("div");
+        d.textContent = bank;
+        d.onclick = () => {
+          inputEl.value = bank;
+          box.style.display = "none";
+        };
+        box.appendChild(d);
+      });
+      box.style.display = "block";
+    }
+
+    // ==========================================
+    // 🧮 တွက်ချက်မှု (အိတ်ရေ လုံးဝအလွတ်ထားခွင့် အပြည့်အစုံ)
+    // ==========================================
+    function calculate(manualCall = false) {
+      let overallTotal = 0;
+      let totalBags = 0;
+
+      document.querySelectorAll(".item-row").forEach(row => {
+        const bag = parseFloat(row.querySelector(".row-bag").value) || 0;
+        const pound = parseFloat(row.querySelector(".row-pound").value) || 0;
+        const price = parseFloat(row.querySelector(".row-price").value) || 0;
+        const totalInput = row.querySelector(".row-total");
+
+        totalBags += bag;
+
+        if (bag > 0 && price > 0) {
+          let lineTotal = pound > 0 ? Math.round((bag * pound / 108) * price) : Math.round(bag * price);
+          totalInput.value = lineTotal.toLocaleString();
+          overallTotal += lineTotal;
+        } else {
+          totalInput.value = "-";
+        }
+      });
+
+      document.getElementById("subTotal").value = overallTotal ? overallTotal.toLocaleString() : "-";
+
+      // အကယ်၍ အသုံးပြုသူက Manual ထိန်းချုပ်မထားမှသာ Auto ထည့်မည်
+      // တစ်ခါဖျက်လိုက်ပါက (သို့မဟုတ်) ပြင်ရိုက်ထားပါက Auto ပြန်မထည့်တော့ဘဲ အသုံးပြုသူ ထားသည့်အတိုင်း (အလွတ်ဖြစ်လျှင်လည်း အလွတ်အတိုင်း) ထားမည်
+      if (!isCarBagManual) {
+        document.getElementById("carBagInput").value = totalBags || "";
+      }
+      if (!isBrokerBagManual) {
+        document.getElementById("brokerBagInput").value = totalBags || "";
+      }
+
+      // ကားခ တွက်ချက်ခြင်း (အလွတ်ထားပါက 0 အဖြစ်ယူပြီး ကျသင့်ငွေ မနုတ်ပါ)
+      const carBagVal = document.getElementById("carBagInput").value.trim();
+      const carBag = carBagVal === "" ? 0 : (parseFloat(carBagVal) || 0);
+      const carRate = parseFloat(document.getElementById("carRateInput").value) || 0;
+      const carFeeTotal = carBag * carRate;
+      document.getElementById("carFeeTotal").value = (carBagVal !== "" && carFeeTotal > 0) ? carFeeTotal.toLocaleString() : "-";
+
+      // ပွဲခ တွက်ချက်ခြင်း (အလွတ်ထားပါက 0 အဖြစ်ယူပြီး ကျသင့်ငွေ မနုတ်ပါ)
+      const brokerBagVal = document.getElementById("brokerBagInput").value.trim();
+      const brokerBag = brokerBagVal === "" ? 0 : (parseFloat(brokerBagVal) || 0);
+      const brokerRate = parseFloat(document.getElementById("brokerRateInput").value) || 0;
+      const brokerFeeTotal = brokerBag * brokerRate;
+      document.getElementById("brokerFeeTotal").value = (brokerBagVal !== "" && brokerFeeTotal > 0) ? brokerFeeTotal.toLocaleString() : "-";
+
+      // Balance = ကုန်ကျငွေစုစုပေါင်း - (ကားခ + ပွဲခ)
+      const actualCarDeduct = (carBagVal !== "") ? carFeeTotal : 0;
+      const actualBrokerDeduct = (brokerBagVal !== "") ? brokerFeeTotal : 0;
+      const netPayable = overallTotal - (actualCarDeduct + actualBrokerDeduct);
+
+      let totalPaid = 0;
+      document.querySelectorAll(".pay-amount").forEach(input => {
+        totalPaid += parseFloat(input.value) || 0;
+      });
+
+      const finalRemaining = netPayable - totalPaid;
+      document.getElementById("finalBalance").value = finalRemaining ? finalRemaining.toLocaleString() : "-";
+    }
+
+    function addPaymentRow() {
+      const tbody = document.getElementById("paymentBody");
+      const tr = document.createElement("tr");
+      tr.className = "pay-row";
+      tr.innerHTML = `
+        <td><input type="text" class="text-center pay-date"></td>
+        <td>
+          <input type="text" class="row-paymethod" onclick="showBankDropdown(event, this)" autocomplete="off">
+          <div class="quick-dropdown bank-drop"></div>
+        </td>
+        <td>
+          <input type="number" class="text-right pay-amount" oninput="calculate()">
+          <button class="btn-row-del no-print" onclick="deletePayRow(this)" title="လိုင်းဖျက်ရန်">✕</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function deletePayRow(btn) {
+      btn.closest("tr").remove();
+      calculate();
+    }
+
+    // Modal Handlers
+    function openSettingsModal() { document.getElementById("settingsModal").style.display = "flex"; renderModalData(); }
+    function closeSettingsModal() { document.getElementById("settingsModal").style.display = "none"; }
+    function switchTab(index) {
+      document.querySelectorAll(".tab-btn").forEach((btn, i) => btn.classList.toggle("active", i === index));
+      document.querySelectorAll(".tab-pane").forEach((pane, i) => pane.classList.toggle("active", i === index));
+    }
+    function renderModalData() {
+      const custs = getData("customers");
+      document.getElementById("mCustBody").innerHTML = custs.map((c, i) => `<tr><td>${c.name}</td><td>${c.address}</td><td>${c.phone}</td><td><button class="btn-del-mini" onclick="delData('customers', ${i})">✕</button></td></tr>`).join("");
+
+      const items = getData("items");
+      document.getElementById("mItemBody").innerHTML = items.map((it, i) => `<tr><td>${it}</td><td><button class="btn-del-mini" onclick="delData('items', ${i})">✕</button></td></tr>`).join("");
+
+      const banks = getData("banks");
+      document.getElementById("mBankBody").innerHTML = banks.map((bk, i) => `<tr><td>${bk}</td><td><button class="btn-del-mini" onclick="delData('banks', ${i})">✕</button></td></tr>`).join("");
+    }
+
+    function addCustomerFromModal() {
+      const name = document.getElementById("mCustName").value.trim();
+      const address = document.getElementById("mCustAddress").value.trim();
+      const phone = document.getElementById("mCustPhone").value.trim();
+      if (!name) return alert("အမည် ရိုက်ထည့်ပါ!");
+      const list = getData("customers");
+      list.push({ name, address, phone });
+      setData("customers", list);
+      document.getElementById("mCustName").value = "";
+      document.getElementById("mCustAddress").value = "";
+      document.getElementById("mCustPhone").value = "";
+      renderModalData();
+    }
+    function addItemFromModal() {
+      const name = document.getElementById("mItemName").value.trim();
+      if (!name) return alert("ပစ္စည်းအမည် ရိုက်ထည့်ပါ!");
+      const list = getData("items");
+      list.push(name);
+      setData("items", list);
+      document.getElementById("mItemName").value = "";
+      renderModalData();
+    }
+    function addBankFromModal() {
+      const name = document.getElementById("mBankName").value.trim();
+      if (!name) return alert("Bank အမည် ရိုက်ထည့်ပါ!");
+      const list = getData("banks");
+      list.push(name);
+      setData("banks", list);
+      document.getElementById("mBankName").value = "";
+      renderModalData();
+    }
+    function delData(key, index) {
+      const list = getData(key);
+      list.splice(index, 1);
+      setData(key, list);
+      renderModalData();
+    }
+
+    function uploadBannerImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById("mainBannerImg").src = evt.target.result;
+          localStorage.setItem("ptn_custom_banner", evt.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    const savedBanner = localStorage.getItem("ptn_custom_banner");
+    if (savedBanner) document.getElementById("mainBannerImg").src = savedBanner;
+
+    window.onload = function() {
+      calculate();
+      loadDataFromCloud(false);
+      updateDraftCountBadge();
+    };
+
+    window.addEventListener('focus', function() {
+      loadDataFromCloud(false);
+    });
+  </script>
+</body>
+</html>
